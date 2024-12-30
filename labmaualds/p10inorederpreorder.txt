@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *llink;
+    struct node *rlink;
+};
+typedef struct node NODE;
+
+NODE* insert(int item, NODE *root) {
+    NODE *temp, *cur, *prev;
+    temp = (NODE*)malloc(sizeof(NODE));
+    if (temp == NULL) {
+        printf("Memory allocation failed!\n");
+        return root;
+    }
+    temp->data = item;
+    temp->llink = temp->rlink = NULL;
+    if (root == NULL) {
+        return temp;
+    }
+    prev = NULL;
+    cur = root;
+    while (cur != NULL) {
+        prev = cur;
+        if (cur->data >= item)
+            cur = cur->llink;
+        else
+            cur = cur->rlink;
+    }
+    if (item < prev->data) {
+        prev->llink = temp;
+    } else {
+        prev->rlink = temp;
+    }
+    return root;
+}
+
+NODE* construct_bsf(NODE *root) {
+    int n, a;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+    printf("Enter Elements: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &a);
+        root = insert(a, root);
+    }
+    printf("Tree created successfully!\n");
+    return root;
+}
+
+void search_item(NODE *root, int key) {
+    if (root == NULL) {
+        printf("Tree Empty!\n");
+        return;
+    }
+    NODE *cur = root;
+    while (cur) {
+        if (cur->data == key) {
+            printf("Key found!\n");
+            return;
+        } else if (key < cur->data) {
+            cur = cur->llink;
+        } else {
+            cur = cur->rlink;
+        }
+    }
+    printf("Key not found!\n");
+}
+
+void preorder(NODE *root) {
+    if (root != NULL) {
+        printf("%d\t", root->data);
+        preorder(root->llink);
+        preorder(root->rlink);
+    }
+}
+
+void postorder(NODE *root) {
+    if (root != NULL) {
+        postorder(root->llink);
+        postorder(root->rlink);
+        printf("%d\t", root->data);
+    }
+}
+
+void inorder(NODE *root) {
+    if (root != NULL) {
+        inorder(root->llink);
+        printf("%d\t", root->data);
+        inorder(root->rlink);
+    }
+}
+
+int main() {
+    NODE *root = NULL;
+    int ch, key;
+    while (1) {
+        printf("\n1. Construct Tree\n2. Preorder\n3. Postorder\n4. Inorder\n5. Search\n6. Exit\nEnter your Choice: ");
+        scanf("%d", &ch);
+        switch (ch) {
+            case 1:
+                root = construct_bsf(root);
+                break;
+            case 2:
+                preorder(root);
+                printf("\n");
+                break;
+            case 3:
+                postorder(root);
+                printf("\n");
+                break;
+            case 4:
+                inorder(root);
+                printf("\n");
+                break;
+            case 5:
+                printf("Enter key to search: ");
+                scanf("%d", &key);
+                search_item(root, key);
+                break;
+            case 6:
+                exit(0);
+            default:
+                printf("Invalid Choice\n");
+        }
+    }
+    return 0;
+}

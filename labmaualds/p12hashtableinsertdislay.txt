@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define hashsize 100
+struct employee {
+    char name[30];
+    int id;
+};
+typedef struct employee EMPLOYEE;
+void create_hash_table(EMPLOYEE a[]) {
+    for (int i = 0; i < hashsize; i++) {
+        a[i].id = 0;
+    }
+}
+int H(int k) {
+    return k % hashsize;
+}
+void insert_table(EMPLOYEE a[], int id, char name[]) {
+    int i, index, hashvalue;
+    hashvalue = H(id);
+    for (i = 0; i < hashsize; i++) {
+        index = (hashvalue + i) % hashsize;
+        if (a[index].id == 0) {
+            a[index].id = id;
+            strcpy(a[index].name, name);
+            break;
+        }
+    }
+    if (i == hashsize) {
+        printf("\nHASH TABLE FULL!!\n");
+    }
+}
+void display(EMPLOYEE a[]) {
+    printf("\nINDEX\tID\tNAME\n");
+    for (int i = 0; i < hashsize; i++) {
+        if (a[i].id != 0) {
+            printf("%d\t%d\t%s\n", i, a[i].id, a[i].name);
+        }
+    }
+}
+int main() {
+    EMPLOYEE a[hashsize];
+    int ch, id;
+    char name[30];
+    create_hash_table(a);
+    while (1) {
+        printf("\nHASH_TABLE\n1. INSERT\n2. DISPLAY\n3. EXIT\nEnter Your Choice: ");
+        scanf("%d", &ch);
+        switch (ch) {
+            case 1:
+                printf("\nEnter name: ");
+                scanf(" %[^\n]", name);
+                printf("Enter id: ");
+                scanf("%d", &id);
+                insert_table(a, id, name);
+                break;
+            case 2:
+                display(a);
+                break;
+            case 3:
+                exit(0);
+            default:
+                printf("Invalid Choice!\n");
+        }
+    }
+    return 0;
+}
